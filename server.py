@@ -15,7 +15,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Paths
-ADS_FILE = Path("/app/ads.json")
+ADS_FILE = Path(__file__).parent / "ads.json"
 
 # Admin credentials
 ADMIN_USERNAME = "shaswat369"
