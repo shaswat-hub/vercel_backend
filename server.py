@@ -162,16 +162,16 @@ async def get_ads():
         logging.error(f"Error reading ads: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to load ads")
 
+from pymongo import MongoClient
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client["exambot"]
+ads_col = db["ads"]
+
 @api_router.post("/ads/update")
 async def update_ads(ads: AdsUpdate):
-    try:
-        ads_dict = ads.model_dump()
-        # skip actual file writing on Vercel (read‑only)
-        print("ADS UPDATE:", ads_dict)  # debug print only
-        return {"success": True, "message": "Received ads update (not saved on Vercel)"}
-    except Exception as e:
-        logging.error(f"Error updating ads: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to update ads")
+    ads_dict = ads.model_dump()
+    ads_col.update_one({}, {"$set": ads_dict}, upsert=True)
+    return {"success": True, "message": "Ads stored in MongoDB"}
 
 # Include the router in the main app
 app.include_router(api_router)
