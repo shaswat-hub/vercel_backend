@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from typing import List, Dict
 import json
 import asyncio
-from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+# from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -49,6 +49,8 @@ class AdsUpdate(BaseModel):
 
 # Helper function to call Gemini
 async def analyze_with_gemini(images_base64: List[str], prompt: str) -> str:
+    # Temporary dummy until Emergent integrations module available
+    return f"Mock Gemini response for {len(images_base64)} images."
     try:
         api_key = os.getenv('EMERGENT_LLM_KEY')
         if not api_key:
