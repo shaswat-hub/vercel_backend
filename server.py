@@ -127,7 +127,13 @@ Total marks must add up to exactly 100 marks."""
 
 @api_router.post("/admin/login")
 async def admin_login(credentials: AdminLogin):
-    if credentials.username == ADMIN_USERNAME and credentials.password == ADMIN_PASSWORD:
+    # debug prints - temporarily just to check input
+    print("USERNAME RECEIVED:", repr(credentials.username))
+    print("PASSWORD RECEIVED:", repr(credentials.password))
+    print("EXPECTED:", repr(ADMIN_USERNAME), repr(ADMIN_PASSWORD))
+
+    # compare after stripping extra spaces
+    if credentials.username.strip() == ADMIN_USERNAME and credentials.password.strip() == ADMIN_PASSWORD:
         return {"success": True, "message": "Login successful"}
     else:
         raise HTTPException(
@@ -160,9 +166,9 @@ async def get_ads():
 async def update_ads(ads: AdsUpdate):
     try:
         ads_dict = ads.model_dump()
-        with open(ADS_FILE, 'w') as f:
-            json.dump(ads_dict, f, indent=2)
-        return {"success": True, "message": "Ads updated successfully"}
+        # skip actual file writing on Vercel (read‑only)
+        print("ADS UPDATE:", ads_dict)  # debug print only
+        return {"success": True, "message": "Received ads update (not saved on Vercel)"}
     except Exception as e:
         logging.error(f"Error updating ads: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to update ads")
